@@ -13,5 +13,6 @@ module.exports = defineConfig({
       .set('asset', '@/asset')
       .set('store', '@/store')
       .set('router', '@/router')
+      .set('service', '@/service')
   }
 })
