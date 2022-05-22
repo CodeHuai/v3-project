@@ -68,12 +68,14 @@ export default class network {
     // 2：还有一种是returnCode的判断方式，这种需要在成功的相应拦截中进行判断。因为他的http状态码可能是成功的标识
     this.instance.interceptors.response.use(
       (response) => {
+        this.loading?.close()
         return response.data
       },
       (err) => {
         if (err.response.status === 404) {
           console.log('404报错')
         }
+        this.loading?.close()
         return err
       }
     )
