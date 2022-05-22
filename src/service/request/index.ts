@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import axios from 'axios'
@@ -12,6 +13,7 @@ export default class network {
   instance: AxiosInstance
   interCeptors?: RequestInterCeptors
   loading?: LoadingInstance
+  showLoading?: boolean
 
   /**
    *
@@ -27,6 +29,9 @@ export default class network {
     this.setInterCeptors()
     // 设置通用拦截器
     this.setCommonInterCeptors()
+
+    // 是否展示showLoading
+    this.showLoading = config.showLoading ?? true
   }
 
   // 实例的拦截
@@ -46,17 +51,13 @@ export default class network {
   setCommonInterCeptors() {
     this.instance.interceptors.request.use(
       (config) => {
-        this.loading = ElLoading.service({
-          lock: true,
-          text: 'Loading...',
-          background: '#ccc'
-        })
-        // const token = '123'
-        // if (token && config.headers.Authorization) {
-        //   config.headers.Authorization = `Bearer ${token}`
-        // }
-        console.log(config)
-
+        if (this.showLoading) {
+          this.loading = ElLoading.service({
+            lock: true,
+            text: 'Loading...',
+            background: '#ccc'
+          })
+        }
         return config
       },
       (err) => {
@@ -69,6 +70,7 @@ export default class network {
     this.instance.interceptors.response.use(
       (response) => {
         this.loading?.close()
+        this.showLoading = true
         return response.data
       },
       (err) => {
@@ -76,27 +78,50 @@ export default class network {
           console.log('404报错')
         }
         this.loading?.close()
+        this.showLoading = true
         return err
       }
     )
   }
 
   // 请求的拦截设置
-  request(config: RequestConfig): void {
-    // 这里是请求拦截
-    if (config.interCeptors?.requestInterCeptor) {
-      config = config.interCeptors?.requestInterCeptor(config)
-    }
-    this.instance.request(config).then(
-      (response) => {
-        // 这里是成功的回调，所以可以拿到响应头
-        if (config.interCeptors?.responseInterCeptor) {
-          config = config.interCeptors?.responseInterCeptor(response)
-        }
-      },
-      (err) => {
-        console.log(err)
+  request<T>(config: RequestConfig): Promise<T> {
+    return new Promise((resolve, reject) => {
+      // 这里是请求拦截
+      if (config.interCeptors?.requestInterCeptor) {
+        config = config.interCeptors?.requestInterCeptor(config)
       }
-    )
+
+      // 这里的request可不是这个类的request,这个是axios的request
+      this.instance.request<any, T>(config).then(
+        (response) => {
+          // 这里是成功的回调，所以可以拿到响应头
+          if (config.interCeptors?.responseInterCeptor) {
+            config = config.interCeptors?.responseInterCeptor(response)
+          }
+          resolve(response)
+        },
+        (err) => {
+          reject(err)
+        }
+      )
+    })
+  }
+
+  // get方法
+  get<T>(config: RequestConfig): Promise<T> {
+    return this.request({ ...config, method: 'GET' })
+  }
+
+  delete<T>(config: RequestConfig): Promise<T> {
+    return this.request({ ...config, method: 'DELETE' })
+  }
+
+  post<T>(config: RequestConfig): Promise<T> {
+    return this.request({ ...config, method: 'POST' })
+  }
+
+  patch<T>(config: RequestConfig): Promise<T> {
+    return this.request({ ...config, method: 'PATCH' })
   }
 }

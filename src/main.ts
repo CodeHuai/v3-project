@@ -12,7 +12,8 @@ import { networkAxiosInstance } from './service/index'
 networkAxiosInstance.request({
   url: '/login',
   method: 'POST',
-  data: { name: 'coderwhy', password: '123456' }
+  data: { name: 'coderwhy', password: '123456' },
+  showLoading: true
 })
 
 createApp(App).use(router).use(store).use(ElementPlus).mount('#app')
