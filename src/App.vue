@@ -1,10 +1,6 @@
 <template>
   <div id="app">
-    <router-link to="/login">登录</router-link>
-    <router-link to="/main">首页</router-link>
-    <h2>{{ name }}</h2>
     <router-view></router-view>
-    <el-button>默认按钮</el-button>
   </div>
 </template>
 
@@ -24,4 +20,14 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('./assets/image/login-banner/login-banner.jpg') no-repeat;
+  background-size: 100%;
+}
+</style>
