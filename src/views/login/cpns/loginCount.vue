@@ -15,6 +15,7 @@
 import { rules } from '../config/rules'
 import { ElForm } from 'element-plus'
 import { defineComponent, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 import cache from '@/utils/cache'
 
 export default defineComponent({
@@ -22,6 +23,8 @@ export default defineComponent({
     ElForm
   },
   setup() {
+    const loginStore = useStore()
+
     const countRules = reactive({
       name: cache.getCache('userCount').name ?? '',
       password: cache.getCache('userCount').password ?? ''
@@ -40,6 +43,7 @@ export default defineComponent({
             //  没有记住密码就清除密码
             cache.removeCacheByKeyName('userCount')
           }
+          loginStore.dispatch('login/handleLoginWithCount', { ...countRules })
         }
       })
     }
