@@ -1,6 +1,6 @@
 <template>
   <div class="phone-container">
-    <el-form>
+    <el-form ref="phoneRef">
       <el-form-item label="手机号：" prop="num">
         <el-input v-model="phoneRules.num" />
       </el-form-item>
@@ -8,7 +8,7 @@
         <div class="get-code">
           <el-input v-model="phoneRules.code" />
           <div>
-            <el-button type="primary" class="get-btn">获取验证码</el-button>
+            <el-button class="get-btn" type="primary">获取验证码</el-button>
           </div>
         </div>
       </el-form-item>
@@ -17,26 +17,49 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
+import { ElForm } from 'element-plus'
+import { defineComponent, reactive, ref } from 'vue'
+import cache from '@/utils/cache'
 
 export default defineComponent({
+  components: {
+    ElForm
+  },
   setup() {
     const phoneRules = reactive({
-      num: '',
-      code: ''
+      num: cache.getCache('userPhone').name ?? '',
+      code: cache.getCache('userPhone').password ?? ''
     })
+
+    const phoneRef = ref<InstanceType<typeof ElForm>>()
+
+    const handleLogin = (rememberPassword: boolean) => {
+      phoneRef.value?.validate((valid: boolean) => {
+        if (valid) {
+          if (rememberPassword) {
+            cache.setCache('userPhone', phoneRules)
+          } else {
+            //  没有记住密码就清除密码
+            cache.removeCacheByKeyName('userPhone')
+          }
+        }
+      })
+    }
     return {
-      phoneRules
+      phoneRef,
+      phoneRules,
+      handleLogin
     }
   }
 })
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 /deep/ .el-form-item__content {
   display: flex;
   flex-wrap: nowrap;
 }
+
 .phone-container {
   .get-code {
     display: flex;
