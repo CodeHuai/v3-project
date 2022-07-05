@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import axios from 'axios'
-import { AxiosInstance } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import BASE_URL from './config'
 import type { RequestConfig, RequestInterCeptors } from './type'
 import { ElLoading } from 'element-plus'

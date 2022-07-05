@@ -1,10 +1,20 @@
 import { createStore } from 'vuex'
 
-const store = createStore({
+import { RootType } from './rootType'
+import login from './login/login'
+
+const store = createStore<RootType>({
   state() {
     return {
-      name: 'coderwhy'
+      name: '',
+      userInfo: {}
     }
+  },
+  mutations: {},
+  getters: {},
+  actions: {},
+  modules: {
+    login
   }
 })
 
