@@ -14,5 +14,16 @@ module.exports = defineConfig({
       .set('store', '@/store')
       .set('router', '@/router')
       .set('service', '@/service')
+  },
+  devServer: {
+    proxy: {
+      '^/api': {
+        target: 'http://152.136.185.210:5000',
+        pathRewrite: {
+          '^/api': ''
+        },
+        changeOrigin: true
+      }
+    }
   }
 })

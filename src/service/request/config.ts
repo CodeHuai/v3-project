@@ -1,4 +1,4 @@
-const BASE_URL = 'http://152.136.185.210:5000'
+const BASE_URL = '/api'
 
 // 生产环境
 // if (process.env.NODE_ENV === 'production') {
