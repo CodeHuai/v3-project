@@ -1,5 +1,5 @@
 <template>
-  <div class="count-contaiern">
+  <div class="count-container">
     <el-form ref="countRulesRef" :model="countRules" :rules="rules">
       <el-form-item label="账号：" prop="name">
         <el-input v-model="countRules.name" />
